@@ -6,7 +6,8 @@ import { Budget } from "./components/budget";
 import { TotalProfit } from "./components/total-profit";
 import { TasksProgress } from "./components/task-progress";
 import { TotalGamesPlayed } from "./components/total-games-played";
-import { LatestGames } from "./components/latest-games";
+import { LatestGamesScores } from "./components/latest-games-scores";
+import { Winrate } from "./components/winrate";
 
 export default function Dashboard() {
   const auth = useSelector((state) => state.auth);
@@ -74,9 +75,9 @@ export default function Dashboard() {
             xl={9}
             xs={12}
           >
-            <LatestGames />
+            <LatestGamesScores />
           </Grid>
-          {/*
+          
           <Grid
             item
             lg={4}
@@ -84,8 +85,9 @@ export default function Dashboard() {
             xl={3}
             xs={12}
           >
-            <TrafficByDevice sx={{ height: '100%' }} />
+            <Winrate sx={{ height: '100%' }} />
           </Grid>
+          {/*
           <Grid
             item
             lg={4}

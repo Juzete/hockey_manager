@@ -42,7 +42,7 @@ const data = {
       maxBarThickness: 20
     },
     {
-      backgroundColor: '#EEEEEE',
+      backgroundColor: '#c7c7c7',
       barPercentage: 0.5,
       barThickness: 12,
       borderRadius: 4,
@@ -57,8 +57,7 @@ const data = {
 
 
 
-export const LatestGames = (props) => {
-  const theme = useTheme();
+export const LatestGamesScores = (props) => {
   return (
     <Card {...props}>
       <CardHeader

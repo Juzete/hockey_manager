@@ -22,7 +22,7 @@ export default function LoginPage() {
   useEffect(() => {
     console.log(isAuth)
     if (isAuth) navigate('/')
-  }, [isAuth])
+  }, [isAuth, navigate])
   
 
   const handleSubmit = (event) => {
