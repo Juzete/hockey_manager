@@ -8,6 +8,7 @@ import { TasksProgress } from "./components/task-progress";
 import { TotalGamesPlayed } from "./components/total-games-played";
 import { LatestGamesScores } from "./components/latest-games-scores";
 import { Winrate } from "./components/winrate";
+import { Sidebar } from "./components/sidebar";
 
 export default function Dashboard() {
   const auth = useSelector((state) => state.auth);
@@ -24,7 +25,8 @@ export default function Dashboard() {
       component="main"
       sx={{
         flexGrow: 1,
-        py: 8
+        py: 8,
+        ml: 25,
       }}
     >
       <Container maxWidth={false}>
@@ -109,6 +111,7 @@ export default function Dashboard() {
         </Grid>
       </Container>
     </Box>
+    <Sidebar />
   </>
   );
 }
