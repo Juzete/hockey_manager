@@ -1,10 +1,9 @@
-import { useEffect } from 'react';
-import { Box, Button, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
+import { Box, Drawer } from '@mui/material';
 import { ChartBar as ChartBarIcon } from '../../../icons/chart-bar';
 import { Cog as CogIcon } from '../../../icons/cog';
 import { Lock as LockIcon } from '../../../icons/lock';
 import { ShoppingBag as ShoppingBagIcon } from '../../../icons/shopping-bag';
-import { User as UserIcon } from '../../../icons/user';
+import { Search } from '../../../icons/search';
 import { UserAdd as UserAddIcon } from '../../../icons/user-add';
 import { Users as UsersIcon } from '../../../icons/users';
 import { XCircle as XCircleIcon } from '../../../icons/x-circle';
@@ -17,29 +16,14 @@ const items = [
     title: 'Dashboard'
   },
   {
-    href: '/customers',
+    href: '/players',
     icon: (<UsersIcon fontSize="small" />),
-    title: 'Customers'
+    title: 'Players'
   },
   {
-    href: '/products',
-    icon: (<ShoppingBagIcon fontSize="small" />),
-    title: 'Products'
-  },
-  {
-    href: '/account',
-    icon: (<UserIcon fontSize="small" />),
-    title: 'Account'
-  },
-  {
-    href: '/settings',
-    icon: (<CogIcon fontSize="small" />),
-    title: 'Settings'
-  },
-  {
-    href: '/login',
-    icon: (<LockIcon fontSize="small" />),
-    title: 'Login'
+    href: '/matches',
+    icon: (<Search fontSize="small" />),
+    title: 'Matches'
   },
   {
     href: '/register',
@@ -50,12 +34,15 @@ const items = [
     href: '/404',
     icon: (<XCircleIcon fontSize="small" />),
     title: 'Error'
-  }
+  },
+  {
+    href: '/logout',
+    icon: (<LockIcon fontSize="small" />),
+    title: 'Log Out'
+  },
 ];
 
 export const Sidebar = (props) => {
-  const { open, onClose } = props;
-
   const content = (
     <>
       <Box

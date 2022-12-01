@@ -1,5 +1,5 @@
 import { Bar } from 'react-chartjs-2';
-import { Box, Card, CardContent, CardHeader, Divider, useTheme } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, Divider } from '@mui/material';
 import React from 'react';
 import {
   Chart as ChartJS,
@@ -37,7 +37,7 @@ const data = {
       barThickness: 12,
       borderRadius: 4,
       categoryPercentage: 0.5,
-      data: [3, 5, 1, 6, 1, 2, 3],
+      data: [3, 5, 1, 6, 1, 2, 3, 1, 4, 2],
       label: 'My team',
       maxBarThickness: 20
     },
@@ -47,12 +47,12 @@ const data = {
       barThickness: 12,
       borderRadius: 4,
       categoryPercentage: 0.5,
-      data: [2, 3, 2, 5, 2, 3, 1],
+      data: [2, 3, 2, 5, 2, 3, 1, 3, 1, 4],
       label: 'Oponents',
       maxBarThickness: 20
     }
   ],
-  labels: ['1 Aug', '2 Aug', '3 Aug', '4 Aug', '5 Aug', '6 Aug', '7 aug']
+  labels: ['1 Aug', '2 Aug', '3 Aug', '4 Aug', '5 Aug', '6 Aug', '7 aug', '8 aug', '9 aug', '10 aug']
 };
 
 
@@ -82,7 +82,6 @@ export const LatestGamesScores = (props) => {
         sx={{
           display: 'flex',
           justifyContent: 'flex-end',
-          p: 2
         }}
       >
       </Box>
