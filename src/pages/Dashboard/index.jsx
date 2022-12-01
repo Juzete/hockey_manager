@@ -1,6 +1,4 @@
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import { Box, Container, Grid } from "@mui/material";
 import { Budget } from "./components/budget";
 import { TotalProfit } from "./components/total-profit";
@@ -9,16 +7,10 @@ import { TotalGamesPlayed } from "./components/total-games-played";
 import { LatestGamesScores } from "./components/latest-games-scores";
 import { Winrate } from "./components/winrate";
 import { Sidebar } from "./components/sidebar";
+import { useAuth } from "../../hooks/use-auth";
 
 export default function Dashboard() {
-  const auth = useSelector((state) => state.auth);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log({ auth });
-    if (!auth.isAuth) navigate("/login");
-  }, []);
-
+  useAuth();
   return (
     <>
     <Box
@@ -89,25 +81,6 @@ export default function Dashboard() {
           >
             <Winrate sx={{ height: '100%' }} />
           </Grid>
-          {/*
-          <Grid
-            item
-            lg={4}
-            md={6}
-            xl={3}
-            xs={12}
-          >
-            <LatestProducts sx={{ height: '100%' }} />
-          </Grid>
-          <Grid
-            item
-            lg={8}
-            md={12}
-            xl={9}
-            xs={12}
-          >
-            <LatestOrders />
-          </Grid> */}
         </Grid>
       </Container>
     </Box>

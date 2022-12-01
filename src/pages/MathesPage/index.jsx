@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import { Box, Container } from "@mui/material";
 import { MatchesList } from "./components/matches-list";
 import { Sidebar } from "../Dashboard/components/sidebar";
+import { useAuth } from "../../hooks/use-auth";
 
 export default function MatchesPage() {
-  const auth = useSelector((state) => state.auth);
-  const navigate = useNavigate();
-
-//   useEffect(() => {
-//     if (!auth.isAuth) navigate("/login");
-//   }, []);
-
+  useAuth();
   return (
     <>
     <Box
