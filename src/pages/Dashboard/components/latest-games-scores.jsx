@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { useSelector } from 'react-redux';
 
 ChartJS.register(
   CategoryScale,
@@ -29,35 +30,51 @@ export const options = {
   },
 };
 
-const data = {
-  datasets: [
-    {
-      backgroundColor: '#3F51B5',
-      barPercentage: 0.5,
-      barThickness: 12,
-      borderRadius: 4,
-      categoryPercentage: 0.5,
-      data: [3, 5, 1, 6, 1, 2, 3, 1, 4, 2],
-      label: 'My team',
-      maxBarThickness: 20
-    },
-    {
-      backgroundColor: '#c7c7c7',
-      barPercentage: 0.5,
-      barThickness: 12,
-      borderRadius: 4,
-      categoryPercentage: 0.5,
-      data: [2, 3, 2, 5, 2, 3, 1, 3, 1, 4],
-      label: 'Oponents',
-      maxBarThickness: 20
-    }
-  ],
-  labels: ['1 Aug', '2 Aug', '3 Aug', '4 Aug', '5 Aug', '6 Aug', '7 aug', '8 aug', '9 aug', '10 aug']
-};
+const getScore = (range, team, list) => {
+  const result = [];
+  const maxRange = list.length < range ? list.length : range;
+  for (let i = 0; i < maxRange; i++) {
+    result.push(list[i][team]);  
+  } 
+  return result;
+}
 
-
+const getDates = (range, list) => {
+  const result = [];
+  const maxRange = list.length < range ? list.length : range;
+  for (let i = 0; i < maxRange; i++) {
+    result.push(list[i].matchDate)
+  }
+  return result;
+}
 
 export const LatestGamesScores = (props) => {
+  const matchesList = useSelector((state) => state.matches.matchesList);
+  const data = {
+    datasets: [
+      {
+        backgroundColor: '#3F51B5',
+        barPercentage: 0.5,
+        barThickness: 12,
+        borderRadius: 4,
+        categoryPercentage: 0.5,
+        data: getScore(15, 'ourScore', matchesList),
+        label: 'My team',
+        maxBarThickness: 20
+      },
+      {
+        backgroundColor: '#c7c7c7',
+        barPercentage: 0.5,
+        barThickness: 12,
+        borderRadius: 4,
+        categoryPercentage: 0.5,
+        data: getScore(15, 'oponentScore', matchesList),
+        label: 'Oponents',
+        maxBarThickness: 20
+      }
+    ],
+    labels: getDates(15, matchesList)
+  };
   return (
     <Card {...props}>
       <CardHeader

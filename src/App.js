@@ -4,8 +4,10 @@ import {
 import ErrorPage404 from "./pages/404-Page";
 import Dashboard from "./pages/Dashboard";
 import LoginPage from './pages/LoginPage';
+import LogoutPage from "./pages/LogoutPage";
 import MatchesPage from "./pages/MathesPage";
 import PlayersPage from "./pages/PlayersPage";
+import TransactionsPage from "./pages/TransactionsPage"
 
 
 export default function App() {
@@ -17,6 +19,8 @@ export default function App() {
         <Route path='/404' element={<ErrorPage404/>} />
         <Route path='/players' element={<PlayersPage/>} />
         <Route path='/matches' element={<MatchesPage/>} />
+        <Route path='/logout' element={<LogoutPage/>} />
+        <Route path='/transactions' element={<TransactionsPage/>} />
       </Routes>
     </Router>
   );

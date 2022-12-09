@@ -11,23 +11,45 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import { v4 as uuidv4 } from 'uuid';
 import { useEffect, useState } from 'react';
-import MatchesModal from './matches-modal';
+import TransactionModal from "./transaction-modal";
 import { SeverityPill } from './status-pill';
-import { useDispatch, useSelector } from 'react-redux';
-import { setMatches } from '../../../store/slices/matchesSlice';
 
 
-export const MatchesList = (props) => {
-  const matchesList = useSelector((state) => state.matches.matchesList);
-  const dispatch = useDispatch();
+export let transactionsDb = [
+  {
+    id: uuidv4(),
+    description: 'Buy equipment',
+    type: "dec",
+    amount: 2850,
+    date: '20/03/2019'
+  },
+  {
+    id: uuidv4(),
+    description: 'Advertise payments',
+    type: "inc",
+    amount: 12000,
+    date: '01/04/2019'
+  },
+  {
+    id: uuidv4(),
+    description: 'Away game spending',
+    type: "dec",
+    amount: 1100,
+    date: '03/04/2019'
+  },
+];
+
+export const TransactionsList = (props) => {
   const [isChecked, setIsChecked] = useState([]);
+  const [transactions, setTransactions] = useState(transactionsDb);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
   const [modalId, setModalId] = useState(null);
 
   useEffect(() => {
-  }, [matchesList])
+  }, [transactions])
   
 
   const handleCheckbox = () => (e) => {
@@ -47,7 +69,9 @@ export const MatchesList = (props) => {
   }
 
   const handleDelete = () => {
-    dispatch(setMatches(matchesList.filter((item) => isChecked.indexOf(item.id) === -1)))
+    console.log(isChecked)
+    console.log(transactions)
+    setTransactions(transactions.filter((item) => isChecked.indexOf(item.id) === -1));
   }
 
   const handleEdit = () => (e) => {
@@ -58,13 +82,13 @@ export const MatchesList = (props) => {
 
   return (
     <>
-    <MatchesModal 
+    <TransactionModal 
       modalIsOpen={modalIsOpen} 
       setModalIsOpen={setModalIsOpen} 
       modalType={modalType} 
       modalId={modalId}/>
     <Card {...props}>
-      <CardHeader title="Matches list" />
+      <CardHeader title="Transactions list" />
       <Box
         sx={{
           p: 2,
@@ -98,45 +122,44 @@ export const MatchesList = (props) => {
                 <TableCell>
                 </TableCell>
                 <TableCell>
-                  Oponents
-                </TableCell>
-                <TableCell>
-                  Score (Our/oponent)
+                  Description
                 </TableCell>
                 <TableCell>
                   Date
                 </TableCell>
                 <TableCell>
-                  Result
+                  Amount
+                </TableCell>
+                <TableCell>
+                  Type
                 </TableCell>
                 <TableCell> 
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {matchesList
-              .map((match) => (
+              {transactionsDb.map((transaction) => (
                 <TableRow
                   hover
-                  key={match.id}
+                  key={transaction.id}
                 >
                   <TableCell>
-                  <Checkbox onChange={handleCheckbox()} id={match.id}/>
+                  <Checkbox onChange={handleCheckbox()} id={transaction.id}/>
                   </TableCell>
                   <TableCell>
-                    {match.oponent}
+                    {transaction.description}
                   </TableCell>
                   <TableCell>
-                    {`${match.ourScore}:${match.oponentScore}`}
+                    {transaction.date}
                   </TableCell>
                   <TableCell>
-                    {match.matchDate}
+                    {`${transaction.amount}$`}
                   </TableCell>
                   <TableCell>
-                    <SeverityPill
-                      color={(match.ourScore > match.oponentScore ? 'success' : 'error')}
+                  <SeverityPill
+                      color={(transaction.type === "inc" ? 'success' : 'error')}
                     >
-                      {match.ourScore > match.oponentScore ? "Win" : "Defeat"}
+                      {transaction.type === "inc" ? "Increase" : "Decrease"}
                     </SeverityPill>
                   </TableCell>
                   <TableCell>
@@ -144,7 +167,7 @@ export const MatchesList = (props) => {
                       color="primary"
                       size="small"
                       variant="contained"
-                      id={match.id}
+                      id={transaction.id}
                       onClick={handleEdit()}
                       >
                       Edit

@@ -6,7 +6,8 @@ import { useFormik } from "formik";
 import { Divider, FormLabel, TextField } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
-import { playersDb } from "./players-list";
+import { transactionsDb } from "./transactions-list";
+import { useState } from "react";
 
 const boxStyles = {
     position: "absolute",
@@ -28,17 +29,19 @@ const boxStyles = {
   margin: 10px;
 `;
 
-const PlayersModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
+const TransactionsModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
+  const [transactionType, setTransactionType] = useState(null)
   const handleClose = () => setModalIsOpen((prev) => !prev);
+  const handleSubmit = (type) => () => setTransactionType(type);
 
-  const editPlayer = (id, playersList, payload) => {
-    console.log(id, playersList, payload);
-    const playerIndex = playersList.findIndex(
+  const editTransaction = (id, transactionsList, payload) => {
+    console.log(id, transactionsList, payload);
+    const transactionIndex = transactionsList.findIndex(
       item => item.id === id
     );
-    console.log({playerIndex});
-    playersDb[playerIndex] = {
-      ...playersList[playerIndex],
+    console.log({transactionType});
+    transactionsDb[transactionIndex] = {
+      ...transactionsList[transactionIndex],
       ...payload,
     }
   }
@@ -59,11 +62,11 @@ const PlayersModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
       if (modalType === "set") {
         const resultObj = { 
           id: uuidv4(), 
-          name: `${values.lastName} ${values.firstName} ${values.secondName}`,
+          type: transactionType,
           ...values 
         };
         console.log(resultObj);
-        playersDb.push(resultObj);
+        transactionsDb.push(resultObj);
         actions.resetForm({
           values: initialValues,
         });
@@ -78,10 +81,10 @@ const PlayersModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
         const val = setExistVal();
         const result = {
           id: modalId,
-          name: `${values.lastName} ${values.firstName} ${values.secondName}`,
+          type: transactionType,
           ...val,
         };
-        editPlayer(modalId, playersDb, result);
+        editTransaction(modalId, transactionsDb, result);
       //  dispatch(editLiquid(result));
         actions.resetForm({
           values: initialValues,
@@ -111,100 +114,69 @@ const PlayersModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
           <Divider sx={{ mb: 5 }} />
           <form onSubmit={formik.handleSubmit}>
           <FieldWrapper>
-              <FormLabel htmlFor="lastName" sx={{ m: 0, p: 0 }}>
-                Last Name
+              <FormLabel htmlFor="description" sx={{ m: 0, p: 0 }}>
+                Description
               </FormLabel>
               <TextField
-                id="lastName"
-                name="lastName"
-                label="Last Name"
+                id="description"
+                name="description"
+                label="Description"
                 variant="outlined"
-                value={formik.values.lastName}
+                value={formik.values.description}
                 onChange={formik.handleChange}
                 required={modalType === "set"}
               />
             </FieldWrapper>
             <FieldWrapper>
-              <FormLabel htmlFor="firstName" sx={{ m: 0, p: 0 }}>
-                First Name
+              <FormLabel htmlFor="date" sx={{ m: 0, p: 0 }}>
+                Date
               </FormLabel>
               <TextField
-                id="firstName"
-                name="firstName"
-                label="First Name"
+                id="date"
+                name="date"
                 variant="outlined"
-                value={formik.values.firstName}
-                onChange={formik.handleChange}
-                required={modalType === "set"}
-              />
-            </FieldWrapper>
-            <FieldWrapper>
-              <FormLabel htmlFor="secondName" sx={{ m: 0, p: 0 }}>
-                Second Name
-              </FormLabel>
-              <TextField
-                id="secondName"
-                name="secondName"
-                label="Second Name"
-                variant="outlined"
-                value={formik.values.secondName}
-                onChange={formik.handleChange}
-                required={modalType === "set"}
-              />
-            </FieldWrapper>
-            <FieldWrapper>
-              <FormLabel htmlFor="number" sx={{ m: 0, p: 0 }}>
-                Player Namber
-              </FormLabel>
-              <TextField
-                id="number"
-                name="number"
-                label="Player Number"
-                variant="outlined"
-                value={formik.values.number}
-                onChange={formik.handleChange}
-                required={modalType === "set"}
-                type={"number"}
-              />
-            </FieldWrapper>
-            <FieldWrapper>
-              <FormLabel htmlFor="salary" sx={{ m: 0, p: 0 }}>
-                Salary
-              </FormLabel>
-              <TextField
-                id="salary"
-                name="salary"
-                label="Salary"
-                variant="outlined"
-                value={formik.values.salary}
-                onChange={formik.handleChange}
-                required={modalType === "set"}
-                type={"number"}
-              />
-            </FieldWrapper>
-            <FieldWrapper>
-              <FormLabel htmlFor="inviteDate" sx={{ m: 0, p: 0 }}>
-                Invitation Date
-              </FormLabel>
-              <TextField
-                id="inviteDate"
-                name="inviteDate"
-                variant="outlined"
-                value={formik.values.inviteDate}
+                value={formik.values.date}
                 onChange={formik.handleChange}
                 required={modalType === "set"}
                 type={"date"}
-                sx={{width: 195 }}
+                sx={{ width: 195}}
               />
             </FieldWrapper>
-            <Button
-              type="submit"
-              variant="contained"
-              color="success"
-              sx={{ ml: 1 }}
-            >
-              Submit
-            </Button>
+            <FieldWrapper>
+              <FormLabel htmlFor="amount" sx={{ m: 0, p: 0 }}>
+                Amount
+              </FormLabel>
+              <TextField
+                id="amount"
+                name="amount"
+                label="Amount"
+                variant="outlined"
+                value={formik.values.amount}
+                onChange={formik.handleChange}
+                required={modalType === "set"}
+                type={"number"}
+              />
+            </FieldWrapper>
+            <Box sx={{display: "flex", justifyContent: "center"}}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="success"
+                sx={{ ml: 1 }}
+                onClick={handleSubmit("inc")}
+              >
+                Increase
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                color="error"
+                sx={{ ml: 1 }}
+                onClick={handleSubmit("dec")}
+              >
+                Decrease
+              </Button>
+            </Box>
           </form>
         </Box>
       </Modal>
@@ -212,4 +184,4 @@ const PlayersModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
   );
 };
 
-export default PlayersModal;
+export default TransactionsModal;

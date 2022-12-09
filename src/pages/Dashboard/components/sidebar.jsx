@@ -26,6 +26,11 @@ const items = [
     title: 'Matches'
   },
   {
+    href: '/transactions',
+    icon: (<ShoppingBagIcon fontSize="small" />),
+    title: 'Transactions'
+  },
+  {
     href: '/register',
     icon: (<UserAddIcon fontSize="small" />),
     title: 'Register'

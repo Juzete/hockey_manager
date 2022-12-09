@@ -1,19 +1,33 @@
 import { Doughnut } from 'react-chartjs-2';
 import { Box, Card, CardContent, CardHeader, Divider, useTheme } from '@mui/material';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import LaptopMacIcon from '@mui/icons-material/LaptopMac';
-import PhoneIcon from '@mui/icons-material/Phone';
-import TabletIcon from '@mui/icons-material/Tablet';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const Winrate = (props) => {
+  const matchesList = useSelector((state) => state.matches.matchesList);
   const theme = useTheme();
+
+  useEffect(() => {
+  }, [matchesList])
+  
+  const getWinrate = () => {
+    const result = matchesList.reduce((acc, item) => {
+      if (item.ourScore > item.oponentScore) {
+        acc++;
+      }
+      return acc;
+    },0);
+    const winrate = (result / matchesList.length * 100).toFixed(0);
+    return [winrate, 100 - winrate]
+  }
 
   const data = {
     datasets: [
       {
-        data: [64, 36],
+        data: getWinrate(),
         backgroundColor: ['#3F51B5', '#e53935', '#FB8C00'],
         borderWidth: 5,
         borderColor: '#FFFFFF',
@@ -44,27 +58,6 @@ export const Winrate = (props) => {
       titleFontColor: theme.palette.text.primary
     }
   };
-
-  const devices = [
-    {
-      title: 'Desktop',
-      value: 63,
-      icon: LaptopMacIcon,
-      color: '#3F51B5'
-    },
-    {
-      title: 'Tablet',
-      value: 15,
-      icon: TabletIcon,
-      color: '#E53935'
-    },
-    {
-      title: 'Mobile',
-      value: 23,
-      icon: PhoneIcon,
-      color: '#FB8C00'
-    }
-  ];
 
   return (
     <Card {...props}>

@@ -130,7 +130,7 @@ export const PlayersList = (props) => {
                   Salary
                 </TableCell>
                 <TableCell>
-                  Invitation date
+                  Invitation Date
                 </TableCell>
                 <TableCell> 
                 </TableCell>
@@ -152,21 +152,14 @@ export const PlayersList = (props) => {
                     {player.number}
                   </TableCell>
                   <TableCell>
-                    {player.salary}
+                    {`${player.salary}$`}
                   </TableCell>
                   <TableCell>
                     {player.inviteDate}
                   </TableCell>
                   <TableCell>
-                    {/* <SeverityPill
-                      color={(order.status === 'delivered' && 'success')
-                      || (order.status === 'refunded' && 'error')
-                      || 'warning'}
-                    >
-                      {order.status}
-                    </SeverityPill> */}
                     <Button
-                      color="secondary"
+                      color="primary"
                       size="small"
                       variant="contained"
                       id={player.id}

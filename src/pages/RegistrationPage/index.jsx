@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -18,12 +18,11 @@ export default function LoginPage() {
   const dispatch = useDispatch()
   const isAuth = useSelector((state) => state.auth.isAuth)
   const navigate = useNavigate();
-  const [isError, setError] = useState(false);
 
-  useEffect(() => {
-    console.log(isAuth)
-    if (isAuth) navigate('/')
-  }, [isAuth, navigate])
+//   useEffect(() => {
+//     console.log(isAuth)
+//     if (isAuth) navigate('/')
+//   }, [isAuth, navigate])
   
 
   const handleSubmit = (event) => {
@@ -40,12 +39,8 @@ export default function LoginPage() {
       })
   })
     .then(function (response) {
-      if (response.status === 200) {
-        setError(false)
+      if (response.status === 200) 
         dispatch(authorize(data.get('email')));
-      } else {
-        setError(true)
-      }
     })
     .catch(function (error) {
       console.log(error);
@@ -73,11 +68,8 @@ export default function LoginPage() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Registration
           </Typography>
-          {isError && <Typography component="h5" variant="h7" color={"error"}>
-            Oops, check yout email and password
-          </Typography>}
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -88,6 +80,16 @@ export default function LoginPage() {
               name="email"
               autoComplete="email"
               autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
             />
             <TextField
               margin="normal"

@@ -1,10 +1,10 @@
 import React from "react";
 import { Box, Container } from "@mui/material";
-import { PlayersList } from "./components/players-list";
+import { TransactionsList } from "./components/transactions-list";
 import { Sidebar } from "../Dashboard/components/sidebar";
 import { useAuth } from "../../hooks/use-auth";
 
-export default function PlayersPage() {
+export default function TransactionsPage() {
   useAuth();
   return (
     <>
@@ -17,7 +17,7 @@ export default function PlayersPage() {
       }}
     >
       <Container maxWidth={false}>
-        <PlayersList />
+        <TransactionsList />
       </Container>
     </Box>
     <Sidebar />

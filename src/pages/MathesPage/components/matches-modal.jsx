@@ -6,7 +6,8 @@ import { useFormik } from "formik";
 import { Divider, FormLabel, TextField } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
-import { matchesDb } from "./matches-list";
+import { useDispatch, useSelector } from "react-redux";
+import { setMatches } from "../../../store/slices/matchesSlice";
 
 const boxStyles = {
     position: "absolute",
@@ -29,18 +30,21 @@ const boxStyles = {
 `;
 
 const MatchesModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
+  const matchesList = useSelector((state) => state.matches.matchesList);
+  const dispatch = useDispatch()
+
   const handleClose = () => setModalIsOpen((prev) => !prev);
 
   const editMatch = (id, matchList, payload) => {
-    console.log(id, matchList, payload);
+    let temp = [...matchList];
     const matchIndex = matchList.findIndex(
       item => item.id === id
     );
-    console.log({matchIndex});
-    matchesDb[matchIndex] = {
-      ...matchList[matchIndex],
+    temp[matchIndex] = {
       ...payload,
     }
+    console.log({temp})
+    dispatch(setMatches(temp));
   }
 
   const initialValues = {
@@ -60,7 +64,7 @@ const MatchesModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
           ...values 
         };
         console.log(resultObj);
-        matchesDb.push(resultObj);
+        dispatch(setMatches([...matchesList, resultObj]));
         actions.resetForm({
           values: initialValues,
         });
@@ -77,7 +81,7 @@ const MatchesModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
           id: modalId,
           ...val,
         };
-        editMatch(modalId, matchesDb, result);
+        editMatch(modalId, matchesList, result);
         actions.resetForm({
           values: initialValues,
         });
@@ -116,6 +120,7 @@ const MatchesModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
                 variant="outlined"
                 value={formik.values.oponent}
                 onChange={formik.handleChange}
+                required={modalType === "set"}
               />
             </FieldWrapper>
             <FieldWrapper>
@@ -129,6 +134,8 @@ const MatchesModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
                 variant="outlined"
                 value={formik.values.ourScore}
                 onChange={formik.handleChange}
+                required={modalType === "set"}
+                type={"number"}
               />
             </FieldWrapper>
             <FieldWrapper>
@@ -142,6 +149,8 @@ const MatchesModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
                 variant="outlined"
                 value={formik.values.oponentScore}
                 onChange={formik.handleChange}
+                required={modalType === "set"}
+                type={"number"}
               />
             </FieldWrapper>
             <FieldWrapper>
@@ -151,10 +160,12 @@ const MatchesModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
               <TextField
                 id="matchDate"
                 name="matchDate"
-                label="DD/MM/YYYY"
                 variant="outlined"
                 value={formik.values.matchDate}
                 onChange={formik.handleChange}
+                required={modalType === "set"}
+                type={"date"}
+                sx={{ width: 195 }}
               />
             </FieldWrapper>
             <Button

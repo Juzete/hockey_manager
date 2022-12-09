@@ -1,7 +1,11 @@
 import { Avatar, Box, Card, CardContent, Grid, Typography } from '@mui/material';
 import GamesIcon from '@mui/icons-material/GamesTwoTone';
+import { useSelector } from 'react-redux';
 
-export const TotalGamesPlayed = (props) => (
+export const TotalGamesPlayed = (props) => {
+  const matchesList = useSelector((state) => state.matches.matchesList)
+
+  return (
   <Card {...props}>
     <CardContent>
       <Grid
@@ -21,7 +25,7 @@ export const TotalGamesPlayed = (props) => (
             color="textPrimary"
             variant="h4"
           >
-            382
+            {matchesList.length}
           </Typography>
         </Grid>
         <Grid item>
@@ -47,4 +51,4 @@ export const TotalGamesPlayed = (props) => (
       </Box>
     </CardContent>
   </Card>
-);
+)};
