@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -8,27 +8,23 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { authorize } from '../../store/slices/authSlice';
+import { useAuth } from '../../hooks/use-auth';
 
 const theme = createTheme();
 
-export default function LoginPage() {
+export default function RegistrationPage() {
   const dispatch = useDispatch()
-  const isAuth = useSelector((state) => state.auth.isAuth)
+  const [isError, setError] = useState(false);
   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     console.log(isAuth)
-//     if (isAuth) navigate('/')
-//   }, [isAuth, navigate])
+  useAuth();
   
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    fetch('http://localhost:8080/auth/login', {
+    fetch('http://localhost:8080/auth/register', {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json;charset=utf-8'
@@ -39,8 +35,13 @@ export default function LoginPage() {
       })
   })
     .then(function (response) {
-      if (response.status === 200) 
+      console.log(response.status)
+      if (response.status === 201) {
         dispatch(authorize(data.get('email')));
+        navigate('/')
+      } else {
+        setError(true)
+      }
     })
     .catch(function (error) {
       console.log(error);
@@ -70,6 +71,9 @@ export default function LoginPage() {
           <Typography component="h1" variant="h5">
             Registration
           </Typography>
+          {isError && <Typography component="h5" variant="h7" color={"error"}>
+            Oops, check yout email and password
+          </Typography>}
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -80,6 +84,7 @@ export default function LoginPage() {
               name="email"
               autoComplete="email"
               autoFocus
+              type="email"
             />
             <TextField
               margin="normal"
@@ -98,7 +103,7 @@ export default function LoginPage() {
               name="password"
               label="Password"
               type="password"
-              id="password"
+              id="password1"
               autoComplete="current-password"
             />
             <Button

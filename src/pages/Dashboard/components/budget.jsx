@@ -1,8 +1,21 @@
 import { Avatar, Box, Card, CardContent, Grid, Typography } from '@mui/material';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import MoneyIcon from '@mui/icons-material/Money';
+import { useSelector } from 'react-redux';
 
-export const Budget = (props) => (
+export const Budget = (props) => {
+  const transactionsList = useSelector((state) => state.transactions.transactionsList);
+
+  const getBudget = () => {
+    let result = 0;
+    transactionsList.forEach((transaction) => {
+      if (transaction.type === 'inc') result += transaction.amount;
+      else result -= transaction.amount;
+    })
+    return result.toFixed(0);
+  }
+
+  return(
   <Card
     sx={{ height: '100%' }}
     {...props}
@@ -25,7 +38,7 @@ export const Budget = (props) => (
             color="textPrimary"
             variant="h4"
           >
-            $24k
+            ${getBudget()}
           </Typography>
         </Grid>
         <Grid item>
@@ -61,9 +74,9 @@ export const Budget = (props) => (
           color="textSecondary"
           variant="caption"
         >
-          Since last month
+          Since last month (WIP)
         </Typography>
       </Box>
     </CardContent>
   </Card>
-);
+)};

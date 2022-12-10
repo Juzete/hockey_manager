@@ -1,7 +1,26 @@
 import { Avatar, Box, Card, CardContent, Grid, LinearProgress, Typography } from '@mui/material';
 import InsertChartIcon from '@mui/icons-material/InsertChartOutlined';
+import { useSelector } from 'react-redux';
 
-export const TasksProgress = (props) => (
+export const TasksProgress = (props) => {
+  const playersList = useSelector((state) => state.players.playersList);
+  const transactionsList = useSelector((state) => state.transactions.transactionsList);
+
+  const getProfit = () => {
+    let result = 0;
+    transactionsList.forEach((transaction) => {
+      if (transaction.type === 'inc') result += transaction.amount;
+    })
+    return result.toFixed(0);
+  }
+
+  const setTask = () => {
+    let allSalaryes = 0;
+    playersList.forEach((player) => allSalaryes += player.salary)
+    return (getProfit() / (allSalaryes * 1.4) * 100).toFixed(2);
+  }
+
+  return(
   <Card
     sx={{ height: '100%' }}
     {...props}
@@ -24,7 +43,7 @@ export const TasksProgress = (props) => (
             color="textPrimary"
             variant="h4"
           >
-            75.5%
+            {setTask()}%
           </Typography>
         </Grid>
         <Grid item>
@@ -41,10 +60,10 @@ export const TasksProgress = (props) => (
       </Grid>
       <Box sx={{ pt: 3 }}>
         <LinearProgress
-          value={75.5}
+          value={setTask()}
           variant="determinate"
         />
       </Box>
     </CardContent>
   </Card>
-);
+)};

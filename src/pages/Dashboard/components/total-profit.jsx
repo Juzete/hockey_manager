@@ -1,7 +1,18 @@
 import { Avatar, Card, CardContent, Grid, Typography } from '@mui/material';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import { useSelector } from 'react-redux';
 
-export const TotalProfit = (props) => (
+export const TotalProfit = (props) => {
+  const transactionsList = useSelector((state) => state.transactions.transactionsList);
+
+  const getProfit = () => {
+    let result = 0;
+    transactionsList.forEach((transaction) => {
+      if (transaction.type === 'inc') result += transaction.amount;
+    })
+    return result.toFixed(0);
+  }
+  return(
   <Card {...props}>
     <CardContent>
       <Grid
@@ -21,7 +32,7 @@ export const TotalProfit = (props) => (
             color="textPrimary"
             variant="h4"
           >
-            $23k
+            ${getProfit()}
           </Typography>
         </Grid>
         <Grid item>
@@ -38,4 +49,4 @@ export const TotalProfit = (props) => (
       </Grid>
     </CardContent>
   </Card>
-);
+)};
