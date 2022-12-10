@@ -21,13 +21,18 @@ import { setMatches } from '../../../store/slices/matchesSlice';
 export const MatchesList = (props) => {
   const matchesList = useSelector((state) => state.matches.matchesList);
   const dispatch = useDispatch();
+  const [currentListToShow, setCurrentListToShow] = useState(matchesList);
   const [isChecked, setIsChecked] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
   const [modalId, setModalId] = useState(null);
 
   useEffect(() => {
+    handleReset()
   }, [matchesList])
+  
+  useEffect(() => {
+  }, [currentListToShow])
   
 
   const handleCheckbox = () => (e) => {
@@ -56,6 +61,28 @@ export const MatchesList = (props) => {
     setModalIsOpen(true);
   }
 
+  const handleReset = () => {
+    setCurrentListToShow(matchesList)
+  }
+ 
+  const handleWins = () => {
+    setCurrentListToShow(matchesList.filter((item) => item.ourScore >  item.oponentScore));
+  }
+
+  const handleGtScore = () => {
+    setCurrentListToShow(matchesList.filter((item) => (item.ourScore + item.oponentScore) > 5));
+  }
+
+  const handleMaxScore = () => {
+    let result = {};
+    matchesList.forEach(item => {
+      if ((item.ourScore + item.oponentScore) > (result.ourScore + result.oponentScore)) {
+        result = item;
+      }
+    })
+    setCurrentListToShow([result]);
+  };
+
   return (
     <>
     <MatchesModal 
@@ -70,7 +97,7 @@ export const MatchesList = (props) => {
           p: 2,
           display: 'flex',
           justifyContent: 'space-between',
-          maxWidth: '150px',
+          maxWidth: '500px',
         }}
       >
         <Button
@@ -88,6 +115,38 @@ export const MatchesList = (props) => {
           onClick={handleDelete}
         >
           Delete
+        </Button>
+        <Button
+          color="primary"
+          size="small"
+          variant="contained"
+          onClick={handleReset}
+        >
+          Reset
+        </Button>
+        <Button
+          color="primary"
+          size="small"
+          variant="contained"
+          onClick={handleWins}
+        >
+          Wins
+        </Button>
+        <Button
+          color="primary"
+          size="small"
+          variant="contained"
+          onClick={handleGtScore}
+        >
+          Score &gt; 5
+        </Button>
+        <Button
+          color="primary"
+          size="small"
+          variant="contained"
+          onClick={handleMaxScore}
+        >
+          Max Score
         </Button>
       </Box>
       <PerfectScrollbar>
@@ -114,7 +173,7 @@ export const MatchesList = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {matchesList
+              {currentListToShow
               .map((match) => (
                 <TableRow
                   hover

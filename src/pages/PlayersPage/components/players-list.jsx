@@ -11,45 +11,27 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { v4 as uuidv4 } from 'uuid';
 import { useEffect, useState } from 'react';
 import PlayerModal from "./player-modal";
-
-
-export let playersDb = [
-  {
-    id: uuidv4(),
-    name: 'Clarke Gillebert',
-    number: 56,
-    salary: 2000,
-    inviteDate: '20/04/2019'
-  },
-  {
-    id: uuidv4(),
-    name: 'Cao Yu',
-    number: 32,
-    salary: 2300,
-    inviteDate: '22/02/2019'
-  },
-  {
-    id: uuidv4(),
-    name: 'Anje Keizer',
-    number: 43,
-    salary: 3200,
-    inviteDate: '20/05/2019'
-  },
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { setPlayers } from '../../../store/slices/playersSlice';
+   
 
 export const PlayersList = (props) => {
+  const playersList = useSelector((state) => state.players.playersList);
+  const [currentListToShow, setCurrentListToShow] = useState(playersList);
+  const dispatch = useDispatch();
   const [isChecked, setIsChecked] = useState([]);
-  const [players, setPlayers] = useState(playersDb);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
   const [modalId, setModalId] = useState(null);
 
   useEffect(() => {
-  }, [players])
+    handleReset()
+  }, [playersList])
   
+  useEffect(() => {
+  }, [currentListToShow])
 
   const handleCheckbox = () => (e) => {
     console.log(e.target.id)
@@ -68,15 +50,25 @@ export const PlayersList = (props) => {
   }
 
   const handleDelete = () => {
-    console.log(isChecked)
-    console.log(players)
-    setPlayers(players.filter((item) => isChecked.indexOf(item.id) === -1));
+    dispatch(setPlayers(playersList.filter((item) => isChecked.indexOf(item.id) === -1)))
   }
 
   const handleEdit = () => (e) => {
     setModalId(e.target.id);
     setModalType("edit");
     setModalIsOpen(true);
+  }
+
+  const handleReset = () => {
+    setCurrentListToShow(playersList)
+  }
+ 
+  const handleDefenders = () => {
+    setCurrentListToShow(playersList.filter((item) => item.role === "Defender" || item.role === "defender"));
+  }
+
+  const handleSalary = () => {
+    setCurrentListToShow(playersList.filter((item) => item.salary > 3000));
   }
 
   return (
@@ -93,7 +85,7 @@ export const PlayersList = (props) => {
           p: 2,
           display: 'flex',
           justifyContent: 'space-between',
-          maxWidth: '150px',
+          maxWidth: '450px',
         }}
       >
         <Button
@@ -112,6 +104,30 @@ export const PlayersList = (props) => {
         >
           Delete
         </Button>
+        <Button
+          color="primary"
+          size="small"
+          variant="contained"
+          onClick={handleReset}
+        >
+          Reset
+        </Button>
+        <Button
+          color="primary"
+          size="small"
+          variant="contained"
+          onClick={handleDefenders}
+        >
+          Defenders
+        </Button>
+        <Button
+          color="primary"
+          size="small"
+          variant="contained"
+          onClick={handleSalary}
+        >
+          Salary &gt; 3000
+        </Button>
       </Box>
       <PerfectScrollbar>
         <Box sx={{ minWidth: 800 }}>
@@ -127,6 +143,9 @@ export const PlayersList = (props) => {
                   Number
                 </TableCell>
                 <TableCell>
+                  Position
+                </TableCell>
+                <TableCell>
                   Salary
                 </TableCell>
                 <TableCell>
@@ -137,7 +156,7 @@ export const PlayersList = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {players.map((player) => (
+              {currentListToShow.map((player) => (
                 <TableRow
                   hover
                   key={player.id}
@@ -150,6 +169,9 @@ export const PlayersList = (props) => {
                   </TableCell>
                   <TableCell>
                     {player.number}
+                  </TableCell>
+                  <TableCell>
+                    {player.role}
                   </TableCell>
                   <TableCell>
                     {`${player.salary}$`}

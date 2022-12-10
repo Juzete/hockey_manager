@@ -6,7 +6,8 @@ import { useFormik } from "formik";
 import { Divider, FormLabel, TextField } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
-import { playersDb } from "./players-list";
+import { useDispatch, useSelector } from "react-redux";
+import { editPlayers, setPlayers } from "../../../store/slices/playersSlice";
 
 const boxStyles = {
     position: "absolute",
@@ -29,6 +30,9 @@ const boxStyles = {
 `;
 
 const PlayersModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
+  const playersList = useSelector((state) => state.players.playersList);
+  const dispatch = useDispatch()
+
   const handleClose = () => setModalIsOpen((prev) => !prev);
 
   const editPlayer = (id, playersList, payload) => {
@@ -37,10 +41,7 @@ const PlayersModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
       item => item.id === id
     );
     console.log({playerIndex});
-    playersDb[playerIndex] = {
-      ...playersList[playerIndex],
-      ...payload,
-    }
+    dispatch(editPlayers({index: playerIndex, player: payload}))
   }
 
   const initialValues = {
@@ -50,6 +51,7 @@ const PlayersModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
     number: "",
     salary: "",
     inviteDate: "",
+    role: "",
   };
 
   const formik = useFormik({
@@ -63,7 +65,7 @@ const PlayersModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
           ...values 
         };
         console.log(resultObj);
-        playersDb.push(resultObj);
+        dispatch(setPlayers([...playersList, resultObj]));
         actions.resetForm({
           values: initialValues,
         });
@@ -76,13 +78,17 @@ const PlayersModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
           return temp;
         };
         const val = setExistVal();
+        const setName = () => {
+          console.log(values)
+          if (values.firstName && values.secondName && values.lastName) val.name = 
+          `${values.lastName} ${values.firstName} ${values.secondName}`
+        }
+        setName();
         const result = {
           id: modalId,
-          name: `${values.lastName} ${values.firstName} ${values.secondName}`,
           ...val,
         };
-        editPlayer(modalId, playersDb, result);
-      //  dispatch(editLiquid(result));
+        editPlayer(modalId, playersList, result);
         actions.resetForm({
           values: initialValues,
         });
@@ -165,6 +171,20 @@ const PlayersModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
                 onChange={formik.handleChange}
                 required={modalType === "set"}
                 type={"number"}
+              />
+            </FieldWrapper>
+            <FieldWrapper>
+              <FormLabel htmlFor="role" sx={{ m: 0, p: 0 }}>
+                Player Position
+              </FormLabel>
+              <TextField
+                id="role"
+                name="role"
+                label="Player Position"
+                variant="outlined"
+                value={formik.values.role}
+                onChange={formik.handleChange}
+                required={modalType === "set"}
               />
             </FieldWrapper>
             <FieldWrapper>

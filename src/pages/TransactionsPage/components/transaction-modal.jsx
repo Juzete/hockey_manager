@@ -6,8 +6,9 @@ import { useFormik } from "formik";
 import { Divider, FormLabel, TextField } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
-import { transactionsDb } from "./transactions-list";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { editTransactions, setTransactions } from "../../../store/slices/transactionsSlice";
 
 const boxStyles = {
     position: "absolute",
@@ -30,6 +31,9 @@ const boxStyles = {
 `;
 
 const TransactionsModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
+  const transactionsList = useSelector((state) => state.transactions.transactionsList);
+  const dispatch = useDispatch()
+
   const [transactionType, setTransactionType] = useState(null)
   const handleClose = () => setModalIsOpen((prev) => !prev);
   const handleSubmit = (type) => () => setTransactionType(type);
@@ -40,33 +44,30 @@ const TransactionsModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) =>
       item => item.id === id
     );
     console.log({transactionType});
-    transactionsDb[transactionIndex] = {
-      ...transactionsList[transactionIndex],
-      ...payload,
-    }
+    dispatch(editTransactions({index: transactionIndex, transaction: payload}))
+    
   }
 
   const initialValues = {
-    firstName: "",
-    lastName: "",
-    secondName: "",
-    number: "",
-    salary: "",
-    inviteDate: "",
+    description: "",
+    amount: "",
+    date: "",
+    //type: "inc",
   };
 
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (values, actions) => {
       handleClose();
-      if (modalType === "set") {
+      if (modalType === "set" && transactionType) {
+        console.log({transactionType})
         const resultObj = { 
           id: uuidv4(), 
           type: transactionType,
           ...values 
         };
         console.log(resultObj);
-        transactionsDb.push(resultObj);
+        dispatch(setTransactions([...transactionsList, resultObj]));
         actions.resetForm({
           values: initialValues,
         });
@@ -84,8 +85,7 @@ const TransactionsModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) =>
           type: transactionType,
           ...val,
         };
-        editTransaction(modalId, transactionsDb, result);
-      //  dispatch(editLiquid(result));
+        editTransaction(modalId, transactionsList, result);
         actions.resetForm({
           values: initialValues,
         });

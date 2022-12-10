@@ -133,9 +133,16 @@ export const matchesSlice = createSlice({
     setMatches: (state, action) => {
         state.matchesList = action.payload;
     },
+    editMatches: (state, action) => {
+      console.log(action.payload);
+        state.matchesList[action.payload.index] = {
+          ...state.matchesList[action.payload.index],
+          ...action.payload.match
+        }
+    },
   },
 })
 
-export const { setMatches } = matchesSlice.actions
+export const { setMatches, editMatches } = matchesSlice.actions
 
 export default matchesSlice.reducer

@@ -7,7 +7,7 @@ import { Divider, FormLabel, TextField } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { setMatches } from "../../../store/slices/matchesSlice";
+import { editMatches, setMatches } from "../../../store/slices/matchesSlice";
 
 const boxStyles = {
     position: "absolute",
@@ -36,15 +36,10 @@ const MatchesModal = ({modalIsOpen, setModalIsOpen, modalType, modalId}) => {
   const handleClose = () => setModalIsOpen((prev) => !prev);
 
   const editMatch = (id, matchList, payload) => {
-    let temp = [...matchList];
     const matchIndex = matchList.findIndex(
       item => item.id === id
     );
-    temp[matchIndex] = {
-      ...payload,
-    }
-    console.log({temp})
-    dispatch(setMatches(temp));
+    dispatch(editMatches({index: matchIndex, match: payload}));
   }
 
   const initialValues = {

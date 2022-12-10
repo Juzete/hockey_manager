@@ -11,45 +11,27 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { v4 as uuidv4 } from 'uuid';
 import { useEffect, useState } from 'react';
 import TransactionModal from "./transaction-modal";
 import { SeverityPill } from './status-pill';
-
-
-export let transactionsDb = [
-  {
-    id: uuidv4(),
-    description: 'Buy equipment',
-    type: "dec",
-    amount: 2850,
-    date: '20/03/2019'
-  },
-  {
-    id: uuidv4(),
-    description: 'Advertise payments',
-    type: "inc",
-    amount: 12000,
-    date: '01/04/2019'
-  },
-  {
-    id: uuidv4(),
-    description: 'Away game spending',
-    type: "dec",
-    amount: 1100,
-    date: '03/04/2019'
-  },
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { setTransactions } from '../../../store/slices/transactionsSlice';
 
 export const TransactionsList = (props) => {
+  const transactionsList = useSelector((state) => state.transactions.transactionsList);
+  const dispatch = useDispatch();
+  const [currentListToShow, setCurrentListToShow] = useState(transactionsList);
   const [isChecked, setIsChecked] = useState([]);
-  const [transactions, setTransactions] = useState(transactionsDb);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
   const [modalId, setModalId] = useState(null);
 
   useEffect(() => {
-  }, [transactions])
+    handleReset()
+  }, [transactionsList])
+  
+  useEffect(() => {
+  }, [currentListToShow])
   
 
   const handleCheckbox = () => (e) => {
@@ -69,15 +51,35 @@ export const TransactionsList = (props) => {
   }
 
   const handleDelete = () => {
-    console.log(isChecked)
-    console.log(transactions)
-    setTransactions(transactions.filter((item) => isChecked.indexOf(item.id) === -1));
+    dispatch(setTransactions(transactionsList.filter((item) => isChecked.indexOf(item.id) === -1)))
   }
 
   const handleEdit = () => (e) => {
     setModalId(e.target.id);
     setModalType("edit");
     setModalIsOpen(true);
+  }
+
+  const handleReset = () => {
+    setCurrentListToShow(transactionsList)
+  }
+
+  const handleProfits = () => {
+    setCurrentListToShow(transactionsList.filter((item) => item.type === "inc"));
+  }
+
+  const handleMostProfit = () => {
+    let result = transactionsList[0];
+    transactionsList.forEach(item => {
+      if (item.type === "inc" && result.type === "dec") {
+        result = item;
+      } else if (result.type === "dec" && item.type === "dec" && result.amount > item.amount) {
+        result = item;
+      } else if (item.amount > result.amount) {
+        result = item;
+      }
+    })
+    setCurrentListToShow([result]);
   }
 
   return (
@@ -94,7 +96,7 @@ export const TransactionsList = (props) => {
           p: 2,
           display: 'flex',
           justifyContent: 'space-between',
-          maxWidth: '150px',
+          maxWidth: '450px',
         }}
       >
         <Button
@@ -112,6 +114,30 @@ export const TransactionsList = (props) => {
           onClick={handleDelete}
         >
           Delete
+        </Button>
+        <Button
+          color="primary"
+          size="small"
+          variant="contained"
+          onClick={handleReset}
+        >
+          Reset
+        </Button>
+        <Button
+          color="primary"
+          size="small"
+          variant="contained"
+          onClick={handleProfits}
+        >
+          Increase
+        </Button>
+        <Button
+          color="primary"
+          size="small"
+          variant="contained"
+          onClick={handleMostProfit}
+        >
+          Most Profit
         </Button>
       </Box>
       <PerfectScrollbar>
@@ -138,7 +164,7 @@ export const TransactionsList = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {transactionsDb.map((transaction) => (
+              {currentListToShow.map((transaction) => (
                 <TableRow
                   hover
                   key={transaction.id}
